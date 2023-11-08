@@ -1,38 +1,125 @@
 openapi : 3.0.1
 info :
   title : T-CarShare
-  description : Павильное описание API
+  description : Идея по реализации каршеринга
   version : 1.0.0
 servers :
   -
-    url : 'https://api.example.com'
+    url : '&'
 paths :
   /car-list :
     get :
-      summary : Получение списка автомобилей
+      summary : NoName
       description : Метод возвращает список автомобилей
       parameters:
         - $ref: '#/components/parameters/status'
       responses :
         '200' :
-          description : OK
+          description : Справочник авто
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CarList'
-  /car-info :
+        '500':
+          description: Системная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UiErrorResponse'
+              example:
+                errorMessage: Произошла системная ошибка
+                errorId: '01234567890123456789'
+                errorCode: SYSTEM_ERROR
+                errorDetails: { }
+        
+  /car-info/{carId} :
     get :
-      summary : Этот тоже без заголовка
+      summary : newMethod2
       description : Сразу видно что у них нет хорошего системного аналитика
+      parameters:
+        - $ref: '#/components/parameters/carId'
+
       responses :
         '200' :
-          description : OK
+          description : OK. Точно ок?
+          
+        '500':
+          description: Системная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UiErrorResponse'
+              example:
+                errorMessage: Произошла системная ошибка
+                errorId: '01234567890123456789'
+                errorCode: SYSTEM_ERROR
+                errorDetails: { }  
+          
+  /add-car :
+    post :
+      summary : Pfdtltybt d cghfdjxybr
+      description : Забыли раскладку поменять?
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCar'
+      responses :
+        '200' :
+          description : Успешно добавили новый автомобиль в справочник    
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UiSuccssessResponse'
+        '500':
+          description: Системная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UiErrorResponse'
+              example:
+                errorMessage: Произошла системная ошибка
+                errorId: '01234567890123456789'
+                errorCode: SYSTEM_ERROR
+                errorDetails: { }  
+                
+  /del-car/{carId} :
+      delete:
+        summary: summary
+        description: description
+        parameters:
+          - $ref: '#/components/parameters/carId'
+        responses :
+          '200' :
+            description : Успешно добавили новый автомобиль в справочниk
+
+          '500':
+            description: Системная ошибка
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UiErrorResponse'
+                example:
+                  errorMessage: Произошла системная ошибка
+                  errorId: '01234567890123456789'
+                  errorCode: SYSTEM_ERROR
+                  errorDetails: { }        
   
 
 components :
   
   parameters :
-    
+  
+    carId:
+      in: path
+      name: carId
+      description: Идентификатор автомобиля
+      required : true 
+      schema:
+        type: string
+        format: uuid
+        example: 291a98ff-4eeb-4586-99a2-b19642bbe5ff
+
     status :
       in : query
       name : status
@@ -55,7 +142,7 @@ components :
       description: Информация по автомобилю
       type: object
       properties:
-        id:
+        carId:
           description: Уникальный идентификатор автомобиля
           type: string
           format: uuid
@@ -80,7 +167,71 @@ components :
         VIN:
           description: VIN-номер автомобиля
           type: string
+    
+    NewCar:
+      title: Добавление нового автомобиля в справочник
+      type: object
+      properties: 
+        mark:
+          description: Марка автомобиля
+          type: string
+          example: KIA
+        model:
+          description: Модель автомобиля
+          type: string
+          example: RIO
+        number:
+          description: Гос.номер автомобиля
+          type: string
+          example: А123РН16
+        VIN:
+          description: VIN-номер автомобиля
+          type: string 
           
+    UiErrorResponse :
+      title : Информация об ошибке для UI
+      allOf :
+        -
+          $ref : '#/components/schemas/ErrorResponse'
+      type : object
+      required :
+        - success
+      properties :
+        success :
+          title : флаг успешности операции
+          type : boolean
+          default : false
           
-  
- 
+    ErrorResponse :
+      title : Информация об ошибке
+      required :
+        - errorCode
+        - errorId
+        - errorMessage
+        - errorDetails
+      type : object
+      properties :
+        errorMessage :
+          title : Сообщение об ошибке
+          type : string
+          example : Произошла системная ошибка
+        errorId :
+          title : Идентификатор ошибки
+          type : string
+          example : '01234567890123456789'
+        errorCode :
+          title : Код ошибки
+          type : string
+          example : SYSTEM_ERROR
+          
+    UiSuccssessResponse:
+      description: Айдишник созданного автомобиля
+      type: object
+      required :
+        - carId
+      properties :
+        carId:
+          description: Уникальный идентификатор автомобиля
+          type: string
+          format: uuid
+          example: 291a98ff-4eeb-4586-99a2-b19642bbe5ff
