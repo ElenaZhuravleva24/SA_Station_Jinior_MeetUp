@@ -1,0 +1,86 @@
+openapi : 3.0.1
+info :
+  title : T-CarShare
+  description : Павильное описание API
+  version : 1.0.0
+servers :
+  -
+    url : 'https://api.example.com'
+paths :
+  /car-list :
+    get :
+      summary : Получение списка автомобилей
+      description : Метод возвращает список автомобилей
+      parameters:
+        - $ref: '#/components/parameters/status'
+      responses :
+        '200' :
+          description : OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarList'
+  /car-info :
+    get :
+      summary : Этот тоже без заголовка
+      description : Сразу видно что у них нет хорошего системного аналитика
+      responses :
+        '200' :
+          description : OK
+  
+
+components :
+  
+  parameters :
+    
+    status :
+      in : query
+      name : status
+      description : Статус автомобиля для бронирования клиентом
+      required : false
+      schema :
+        type : string
+        enum : [ 'FREE', 'BUSY', 'BROKEN' ]
+        example : FREE
+  
+  schemas :
+    
+    CarList :
+      description: Список автомобилей
+      type: array
+      items:
+        $ref: '#/components/schemas/CarInfo'
+        
+    CarInfo :
+      description: Информация по автомобилю
+      type: object
+      properties:
+        id:
+          description: Уникальный идентификатор автомобиля
+          type: string
+          format: uuid
+          example: 291a98ff-4eeb-4586-99a2-b19642bbe5ff
+        status:
+          description : Статус автомобиля для бронирования клиентом
+          type : string
+          enum : [ 'FREE', 'BUSY', 'BROKEN' ]
+          example : FREE
+        mark:
+          description: Марка автомобиля
+          type: string
+          example: KIA
+        model:
+          description: Модель автомобиля
+          type: string
+          example: RIO
+        number:
+          description: Гос.номер автомобиля
+          type: string
+          example: А123РН16
+        VIN:
+          description: VIN-номер автомобиля
+          type: string
+          
+          
+  
+ 
