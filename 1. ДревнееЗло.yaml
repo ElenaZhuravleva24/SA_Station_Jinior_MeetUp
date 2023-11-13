@@ -5,7 +5,7 @@ info :
   version : 1.0.0
 servers :
   -
-    url : '&'
+    url : 'http://localhost'
 paths :
   /car-list :
     get :
@@ -32,29 +32,7 @@ paths :
                 errorCode: SYSTEM_ERROR
                 errorDetails: { }
         
-  /car-info/{carId} :
-    get :
-      summary : newMethod2
-      description : Сразу видно что у них нет хорошего системного аналитика
-      parameters:
-        - $ref: '#/components/parameters/carId'
-
-      responses :
-        '200' :
-          description : OK. Точно ок?
-          
-        '500':
-          description: Системная ошибка
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UiErrorResponse'
-              example:
-                errorMessage: Произошла системная ошибка
-                errorId: '01234567890123456789'
-                errorCode: SYSTEM_ERROR
-                errorDetails: { }  
-          
+            
   /add-car :
     post :
       summary : Pfdtltybt d cghfdjxybr
@@ -83,6 +61,33 @@ paths :
                 errorCode: SYSTEM_ERROR
                 errorDetails: { }  
                 
+  /car-info/{carId} :
+    get :
+      summary : newMethod2
+      description : Сразу видно что у них нет хорошего системного аналитика
+      parameters:
+        - $ref: '#/components/parameters/carId'
+
+      responses :
+        '200' :
+          description : OK. Точно ок?
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/parameters/carId'
+        '500':
+          description: Системная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UiErrorResponse'
+              example:
+                errorMessage: Произошла системная ошибка
+                errorId: '01234567890123456789'
+                errorCode: SYSTEM_ERROR
+                errorDetails: { }  
+
+                
   /del-car/{carId} :
       delete:
         summary: summary
@@ -92,7 +97,18 @@ paths :
         responses :
           '200' :
             description : Успешно добавили новый автомобиль в справочниk
-
+            
+          '404':
+            description: Ресурс не найден
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UiErrorResponse'
+                example:
+                  errorMessage: Запрашиваемый ресурс не найден
+                  errorId: '01234567890123456789'
+                  errorCode: NOT_FOUND
+                  errorDetails: { }  
           '500':
             description: Системная ошибка
             content:
@@ -103,7 +119,47 @@ paths :
                   errorMessage: Произошла системная ошибка
                   errorId: '01234567890123456789'
                   errorCode: SYSTEM_ERROR
-                  errorDetails: { }        
+                  errorDetails: { }     
+ 
+  /driver-licence/new-document : 
+      put:
+        summary: Без этого вызова - бронить авто нельзя!
+        description: Обязательный вызов, потом проверка документа
+        requestBody: 
+          content:
+            multipart/form-data:
+              schema: 
+                $ref: '#/components/schemas/DriverLisencePhoto'
+        
+        responses :
+          '200' :
+            description : Загрузка успешна. Надо проверить на действительность
+            content:
+              application/json:
+                schema:
+                 $ref: '#/components/schemas/DownloadDriverLicenceSuccsses'
+          '404':
+            description: Ресурс не найден
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UiErrorResponse'
+                example:
+                  errorMessage: Запрашиваемый ресурс не найден
+                  errorId: '01234567890123456789'
+                  errorCode: NOT_FOUND
+                  errorDetails: { }  
+          '500':
+            description: Системная ошибка
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UiErrorResponse'
+                example:
+                  errorMessage: Произошла системная ошибка
+                  errorId: '01234567890123456789'
+                  errorCode: SYSTEM_ERROR
+                  errorDetails: { }  
   
 
 components :
@@ -187,7 +243,26 @@ components :
         VIN:
           description: VIN-номер автомобиля
           type: string 
+          example: А123РН16
+    
+    DriverLisencePhoto:
+      title: Скан водительского удостоверения
+      type: object
+      required: 
+        - photo
+      properties:
+        photo: 
+          title: Документ
+          type: file
           
+    DownloadDriverLicenceSuccsses: 
+      title: Succsses
+      type: object
+      properties:
+        docId:
+          type: string
+          format: uuid
+    
     UiErrorResponse :
       title : Информация об ошибке для UI
       allOf :
